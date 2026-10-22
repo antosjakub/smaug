@@ -1,2 +1,5 @@
 
-
+.git/
+*.vtu
+*.pvd
+*.png

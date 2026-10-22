@@ -20,6 +20,9 @@ L = inner(f,v) * dx
 u = Function(V)
 solve(a == L, u, solver_parameters = {'ksp_type': 'cg', 'pc_type': 'none'})
 
+# compute L2 err
+f.interpolate(cos(x*pi*2)*cos(y*pi*2))
+print( sqrt(assemble(dot(u - f, u - f) * dx)) )
 
 #VTKFile("helmholtz.pvd").write(u)
 
@@ -27,4 +30,4 @@ import matplotlib.pyplot as plt
 fig, axes = plt.subplots()
 colors = tripcolor(u, axes=axes)
 fig.colorbar(colors)
-plt.savefig('works.png')
+plt.savefig('helmwood.png')
