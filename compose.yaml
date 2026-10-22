@@ -1,0 +1,10 @@
+
+services:
+  firedrake:
+    image: firedrakeproject/firedrake:latest
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace:Z
+    stdin_open: true
+    tty: true
+
