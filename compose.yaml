@@ -1,10 +1,9 @@
 
 services:
   firedrake:
-    image: firedrakeproject/firedrake:latest
-    working_dir: /workspace
+    image: smaug-img
+    working_dir: ${PWD}
     volumes:
-      - ./:/workspace:Z
+      - ${PWD}:${PWD}:Z
     stdin_open: true
     tty: true
-

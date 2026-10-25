@@ -10,7 +10,7 @@ Fokker-Planck (Smoluch)
 from firedrake import *
 
 # Square mesh of some resultion
-n = 200
+n = 100
 lim = 3.0
 mesh = RectangleMesh(n,n, lim,lim, -lim,-lim)
 
@@ -48,11 +48,14 @@ output = VTKFile('fp.pvd')
 
 t = 0.0
 n_steps = 10
+
 animate = True
+
 if animate:
     output_freq = 1
     us = []
     us.append(ic.copy(deepcopy=True))
+
 for step in range(n_steps):
     print(f"step = {step}")
     solve(F == 0, u)
@@ -64,7 +67,8 @@ for step in range(n_steps):
     step += 1
 
 
-print(len(us))
+
+from firedrake.pyplot import FunctionPlotter, tripcolor, tricontour, tricontourf
 
 import os
 os.makedirs('fp_img/', exist_ok=True)
@@ -73,37 +77,46 @@ if animate:
     import matplotlib.pyplot as plt
     from matplotlib.animation import FuncAnimation
     from matplotlib.colors import Normalize
-    nsp = 16
+    nsp = 64
+
+    print(len(us))
 
     fn_plotter = FunctionPlotter(mesh, num_sample_points=nsp)
     fig, axes = plt.subplots()
     axes.set_aspect('equal')
-    #colors = tripcolor(ic, num_sample_points=nsp, vmin=1, vmax=2, axes=axes)
-    colors = tripcolor(ic, num_sample_points=nsp, axes=axes)
+    colors = tripcolor(ic, num_sample_points=nsp, vmin=1, vmax=2, axes=axes)
+    #colors = tricontourf(ic, num_sample_points=nsp, axes=axes, levels=40)
     cbar = fig.colorbar(colors)
 
+    lines = tricontour(ic, num_sample_points=nsp, axes=axes, levels=25, colors='black', linewidth=0.4)
+
     def update_frame(u):
+        global lines
         data = fn_plotter(u)
         colors.set_array(data)
         colors.norm = Normalize(vmin=data.min(), vmax=data.max())
         cbar.update_normal(colors)
-        return (colors,)
+        lines.remove()
+        lines = tricontour(u, num_sample_points=nsp, axes=axes, levels=25, colors='black', linewidth=0.4)
+
+        return ()
 
     animation = FuncAnimation(fig, update_frame, frames=us)
-    try:
-        animation.save("fp_img/fp.gif", writer='pillow', fps=1.5)
-    except:
-        print("Failed to write movie! Try installing `ffmpeg`.")
+    animation.save("fp_img/fp.gif", writer='pillow', fps=1, dpi=300)
 
 
 import matplotlib.pyplot as plt
 fig, axes = plt.subplots()
 colors = tripcolor(ic, axes=axes)
+#colors = tricontourf(ic, axes=axes, levels=50)
+lines = tricontour(ic, axes=axes, levels=25, colors='black', linewidth=0.4)
 fig.colorbar(colors)
-plt.savefig('fp_img/fp_ic.png')
+plt.savefig('fp_img/fp_ic.png', dpi=300)
 
 import matplotlib.pyplot as plt
 fig, axes = plt.subplots()
 colors = tripcolor(u, axes=axes)
+#colors = tricontourf(u, axes=axes, levels=40)
+lines = tricontour(u, axes=axes, levels=25, colors='black', linewidth=0.4)
 fig.colorbar(colors)
-plt.savefig('fp_img/fp_tc.png')
+plt.savefig('fp_img/fp_tc.png', dpi=300)

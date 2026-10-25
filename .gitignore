@@ -2,4 +2,6 @@
 .git/
 *.vtu
 *.pvd
+
 *.png
+*.gif

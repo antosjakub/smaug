@@ -1,0 +1,7 @@
+{
+  "extraPaths": ["/opt/firedrake"],
+  "reportAttributeAccessIssue": "none",
+  "reportOperatorIssue": "none",
+  "reportOptionalOperand": "none",
+  "reportWildcardImportFromLibrary": "none"
+}
